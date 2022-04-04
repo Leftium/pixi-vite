@@ -12,8 +12,8 @@ const bunny = PIXI.Sprite.from('bunny.png');
 bunny.anchor.set(0.5);
 
 // move the sprite to the center of the screen
-bunny.x = app.screen.width / 2;
-bunny.y = app.screen.height / 2;
+bunny.x = Math.random() * app.screen.width;
+bunny.y = Math.random() * app.screen.height;
 
 app.stage.addChild(bunny);
 
