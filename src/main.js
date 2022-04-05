@@ -1,5 +1,9 @@
 import * as PIXI from 'pixi.js';
 
+export const pixiOptions = {
+    backgroundColor: 0x1099bb
+}
+
 let bunny;
 
 // Ensure all variables are registered here for HMR:
