@@ -16,13 +16,13 @@ app.ticker.add(update);
 let tickerToRemove = update;
 
 if (import.meta.hot) {
-    import.meta.hot.accept('./main.js', (newUpdate) => {
+    import.meta.hot.accept('./main.js', (newMain) => {
         app.ticker.remove(tickerToRemove);
 
-        newUpdate.setState(getState());
+        newMain.setState(getState());
 
-        app.ticker.add(newUpdate.update);
-        tickerToRemove = newUpdate.update;
+        app.ticker.add(newMain.update);
+        tickerToRemove = newMain.update;
     })
 }
 
