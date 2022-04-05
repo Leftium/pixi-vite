@@ -1,12 +1,31 @@
-// update.js
+import * as PIXI from 'pixi.js';
 
-function update(delta, {bunny}) {
-    /**/
-    bunny.rotation += 0.1 * delta;
-    /**/
+let bunny;
+
+// Ensure all variables are registered here for HMR:
+export function setState(data) {({
+    bunny
+} = data)}
+
+export function getState() { return {
+    bunny
+}}
+
+export function init(app) {
+    // create a new Sprite from an image path
+    bunny = PIXI.Sprite.from('bunny.png');
+
+    // center the sprite's anchor point
+    bunny.anchor.set(0.5);
+
+    // move the sprite to random position
+    bunny.x = Math.random() * app.screen.width;
+    bunny.y = Math.random() * app.screen.height;
+
+    app.stage.addChild(bunny);
 }
 
-export {
-    update
+export function update(delta) {
+    bunny.rotation += 0.1 * delta;
 }
 
