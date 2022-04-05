@@ -17,7 +17,7 @@ export function getState() { return {
 
 export function init(app) {
     // create a new Sprite from an image path
-    bunny = PIXI.Sprite.from('bunny.png');
+    bunny = PIXI.Sprite.from('assets/bunny.png');
 
     // center the sprite's anchor point
     bunny.anchor.set(0.5);
