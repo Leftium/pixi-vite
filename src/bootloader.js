@@ -26,8 +26,9 @@ const NULL_FUNCTION = function() {};
 var update   = NULL_FUNCTION;
 var getState = NULL_FUNCTION;
 var setState = NULL_FUNCTION;
+var gsMeta = {};
 import('./main.js').then(module => {
-    ({ update, getState } = module);
+    ({ update, getState, gsMeta } = module);
 });
 
 // setup RAF
@@ -47,7 +48,7 @@ function animate() {
     update(deltaFrame);
 
     var state = getState()
-    console.log(state?.v);
+    console.log(logGameState(state?.gs));
 
     renderer.render(stage);
 
@@ -56,15 +57,24 @@ function animate() {
 
 init(app);
 
+function logGameState(gs) {
+    const filteredState = {};
+    for (const key in gs) {
+        if (gsMeta[key]) {
+            filteredState[key] = gs[key];
+        }
+    }
+    return filteredState;
+}
 
 if (import.meta.hot) {
     import.meta.hot.accept('./main.js', (newMain) => {
 
         // Use old method to get state before updating methods.
         var state = getState();
-        console.log(state?.v);
+        console.log(state?.gs);
 
-        ({ update, setState, getState } = newMain);
+        ({ update, setState, getState, gsMeta } = newMain);
         newMain.setState(state);
 
     })
