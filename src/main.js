@@ -93,12 +93,16 @@ function randomizeStar(star, initial) {
     star.y = Math.sin(deg) * distance;
 }
 
-export function update(delta) {
+// WARNING: `state` is an Immer draft object!
+// NEVER assign directly to state like: `state = someObject`
+export function update(state, delta, deltaMS) {
     // Not required; just keeps code similar to original Pixi example code.
-    let { cameraZ, speed, warpSpeed, elapsed, starAmount, fov, baseSpeed, starStretch, starBaseSize } = gs;
+
+    let { stars } = state;
+    let { cameraZ, speed, warpSpeed, elapsed, starAmount, fov, baseSpeed, starStretch, starBaseSize } = state.gs;
 
     bunny.rotation += 0.1 * delta;
-    elapsed += app.ticker.deltaMS;
+    elapsed += deltaMS;
 
     // Change flight speed every 5 seconds
     warpSpeed = Math.floor(elapsed/5000) % 2;
@@ -128,5 +132,6 @@ export function update(delta) {
     }
 
     // Not required; just keeps code similar to original Pixi example code.
-    gs = { ...gs, cameraZ, speed, warpSpeed, elapsed, starAmount, fov, baseSpeed, starStretch, starBaseSize };
+    state.stars = stars;
+    state.gs = { cameraZ, speed, warpSpeed, elapsed, starAmount, fov, baseSpeed, starStretch, starBaseSize };
 }

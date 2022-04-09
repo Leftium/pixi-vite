@@ -11,6 +11,7 @@
     "vite": "^2.9.0"
   },
   "dependencies": {
+    "immer": "^9.0.12",
     "pixi.js": "^6.3.0"
   }
 }

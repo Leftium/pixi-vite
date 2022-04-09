@@ -3,6 +3,8 @@
 
 import './style.css';
 
+import { produce } from "immer"
+
 import * as PIXI from 'pixi.js';
 
 import { pixiOptions, init} from './main.js';
@@ -18,7 +20,6 @@ var stage = new PIXI.Container();
 // but we provide interface expected for Pixi app:
 var app = { renderer, stage };
 app.screen = renderer.screen;
-app.ticker = { deltaMS: 0 };
 
 
 // These imported methods must be var (not const) for HMR:
@@ -28,11 +29,16 @@ var getState = NULL_FUNCTION;
 var setState = NULL_FUNCTION;
 var gsMeta = {};
 import('./main.js').then(module => {
-    ({ update, getState, gsMeta } = module);
+    ({ update, getState, setState, gsMeta } = module);
 });
 
 // setup RAF
 var oldTime = Date.now();
+
+// Update() wrapped in Immer for immutable data
+let immutableUpdate = produce((gsDraft, delta, deltaMS) => {
+    update(gsDraft, delta, deltaMS);
+})
 
 requestAnimationFrame(animate);
 function animate() {
@@ -43,12 +49,12 @@ function animate() {
     if (deltaTime > 1000) deltaTime = 1000;
     var deltaFrame = deltaTime * 60 / 1000; //1.0 is for single frame
 
-    app.ticker.deltaMS = deltaTime;
-    // update your game there
-    update(deltaFrame);
-
-    var state = getState()
-    console.log(logGameState(state?.gs));
+    const state = getState();
+    if (state) {
+        const nextState = immutableUpdate(state, deltaFrame, deltaTime);
+        setState(nextState);
+        console.log(logGameState(nextState.gs));
+    }
 
     renderer.render(stage);
 
