@@ -31,14 +31,14 @@ export function init(_app) {
 
 // Ensure all variables are registered here for HMR:
 export function setState(data) {({
-    app, bunny, gs, stars
+    app, bunny, sv, stars
 } = data)}
 
 export function getState() { return {
-    app, bunny, gs, stars
+    app, bunny, sv, stars
 }}
 
-export const gsMeta = {
+export const svMeta = {
     cameraZ:   true,
     speed:     true,
     warpSpeed: true,
@@ -48,9 +48,9 @@ export const gsMeta = {
 // Get the texture for rope.
 const starTexture = PIXI.Texture.from('examples/assets/star.png');
 
-// Game State
-// Wrap primitive values in object to persist across hot reloads:
-let gs = {
+// Scalar Values
+// Wrap scalar values in object to persist across hot reloads:
+let sv = {
     starAmount:   1000,
     cameraZ:      0,
     fov:          20,
@@ -65,7 +65,7 @@ let gs = {
 
 // Create the stars
 const starContainer = new PIXI.Container();
-const starAmount = gs.starAmount;
+const starAmount = sv.starAmount;
 app = { stage: starContainer }  // Temporarily mock app.stage while adding stars.
 stars = [];
 for (let i = 0; i < starAmount; i++) {
@@ -83,7 +83,7 @@ for (let i = 0; i < starAmount; i++) {
 }
 
 function randomizeStar(star, initial) {
-    const cameraZ = gs.cameraZ;
+    const cameraZ = sv.cameraZ;
     star.z = initial ? Math.random() * 2000 : cameraZ + Math.random() * 1000 + 2000;
 
     // Calculate star positions with radial random coordinate so no star hits the camera.
@@ -99,7 +99,7 @@ export function update(state, delta, deltaMS) {
     // Not required; just keeps code similar to original Pixi example code.
 
     let { stars } = state;
-    let { cameraZ, speed, warpSpeed, elapsed, starAmount, fov, baseSpeed, starStretch, starBaseSize } = state.gs;
+    let { cameraZ, speed, warpSpeed, elapsed, starAmount, fov, baseSpeed, starStretch, starBaseSize } = state.sv;
 
     bunny.rotation += 0.1 * delta;
     elapsed += deltaMS;
@@ -133,5 +133,5 @@ export function update(state, delta, deltaMS) {
 
     // Not required; just keeps code similar to original Pixi example code.
     state.stars = stars;
-    state.gs = { cameraZ, speed, warpSpeed, elapsed, starAmount, fov, baseSpeed, starStretch, starBaseSize };
+    state.sv = { cameraZ, speed, warpSpeed, elapsed, starAmount, fov, baseSpeed, starStretch, starBaseSize };
 }

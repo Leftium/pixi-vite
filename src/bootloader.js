@@ -27,9 +27,9 @@ const NULL_FUNCTION = function() {};
 var update   = NULL_FUNCTION;
 var getState = NULL_FUNCTION;
 var setState = NULL_FUNCTION;
-var gsMeta = {};
+var svMeta = {};
 import('./main.js').then(module => {
-    ({ update, getState, setState, gsMeta } = module);
+    ({ update, getState, setState, svMeta } = module);
 });
 
 // setup RAF
@@ -53,7 +53,7 @@ function animate() {
     if (state) {
         const nextState = immutableUpdate(state, deltaFrame, deltaTime);
         setState(nextState);
-        console.log(logGameState(nextState.gs));
+        console.log(filterScalarValues(nextState.sv));
     }
 
     renderer.render(stage);
@@ -63,11 +63,11 @@ function animate() {
 
 init(app);
 
-function logGameState(gs) {
+function filterScalarValues(sv) {
     const filteredState = {};
-    for (const key in gs) {
-        if (gsMeta[key]) {
-            filteredState[key] = gs[key];
+    for (const key in sv) {
+        if (svMeta[key]) {
+            filteredState[key] = sv[key];
         }
     }
     return filteredState;
@@ -78,9 +78,9 @@ if (import.meta.hot) {
 
         // Use old method to get state before updating methods.
         var state = getState();
-        console.log(state?.gs);
+        console.log(state?.sv);
 
-        ({ update, setState, getState, gsMeta } = newMain);
+        ({ update, setState, getState, svMeta } = newMain);
         newMain.setState(state);
 
     })
