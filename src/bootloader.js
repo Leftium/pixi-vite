@@ -7,6 +7,8 @@ import { produce } from "immer"
 
 import * as PIXI from 'pixi.js';
 
+import Keyboard from 'pixi.js-keyboard';
+
 import { pixiOptions, init} from './main.js';
 
 
@@ -35,9 +37,22 @@ import('./main.js').then(module => {
 // setup RAF
 var oldTime = Date.now();
 
+let keyboardEvents = {};
+
+Keyboard.events.on('pressed', null, (keyCode, event) => {
+    keyboardEvents['pressed_'+keyCode] = true;
+});
+Keyboard.events.on('released', null, (keyCode, event) => {
+    keyboardEvents['released_'+keyCode] = true;
+});
+Keyboard.events.on('down', null, (keyCode, event) => {
+    keyboardEvents['down_'+keyCode] = true;
+});
+
+
 // Update() wrapped in Immer for immutable data
-let immutableUpdate = produce((gsDraft, delta, deltaMS) => {
-    update(gsDraft, delta, deltaMS);
+let immutableUpdate = produce((gsDraft, delta, deltaMS, keyboardEvents) => {
+    update(gsDraft, delta, deltaMS, keyboardEvents);
 })
 
 requestAnimationFrame(animate);
@@ -51,10 +66,15 @@ function animate() {
 
     const state = getState();
     if (state) {
-        const nextState = immutableUpdate(state, deltaFrame, deltaTime);
+        const nextState = immutableUpdate(state, deltaFrame, deltaTime, keyboardEvents);
         setState(nextState);
-        console.log(filterScalarValues(nextState.sv));
+        // console.log(filterScalarValues(nextState.sv));
+        console.log(keyboardEvents)
+        keyboardEvents = {}
     }
+
+    Keyboard.update();
+
 
     renderer.render(stage);
 

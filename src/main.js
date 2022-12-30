@@ -10,7 +10,7 @@ export const pixiOptions = {
 
 let app, bunny, stars;
 
-export function init(_app) {
+export function init(_app, setup) {
     app = _app;
 
     app.stage.addChild(starContainer);
@@ -95,13 +95,19 @@ function randomizeStar(star, initial) {
 
 // WARNING: `state` is an Immer draft object!
 // NEVER assign directly to state like: `state = someObject`
-export function update(state, delta, deltaMS) {
+export function update(state, delta, deltaMS, keyboardEvents) {
     // Not required; just keeps code similar to original Pixi example code.
 
     let { stars } = state;
     let { cameraZ, speed, warpSpeed, elapsed, starAmount, fov, baseSpeed, starStretch, starBaseSize } = state.sv;
 
     bunny.rotation += 0.1 * delta;
+    if (keyboardEvents.pressed_ArrowLeft)  { bunny.x -= 30; }
+    if (keyboardEvents.pressed_ArrowRight) { bunny.x += 30; }
+
+    if (keyboardEvents.down_ArrowUp)  { bunny.y -= 4; }
+    if (keyboardEvents.down_ArrowDown) { bunny.y += 4; }
+
     elapsed += deltaMS;
 
     // Change flight speed every 5 seconds
